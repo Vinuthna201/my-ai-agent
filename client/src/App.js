@@ -9,7 +9,7 @@ const SERVICES = [
   { key: 'calendar', icon: '📅', label: 'Calendar' },
   { key: 'drive', icon: '🔍', label: 'Drive' },
 ];
-
+// eslint-disable-next-line no-unused-vars
 function PlanView({ plan }) {
   return (
     <div style={planStyles.container}>
