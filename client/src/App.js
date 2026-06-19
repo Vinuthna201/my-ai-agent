@@ -60,14 +60,14 @@ export default function App() {
   }, []);
 
   const fetchSessions = () => {
-    fetch('http://localhost:3001/sessions')
+    fetch('ttps://my-ai-agent-g7ho.onrender.com/sessions')
       .then(r => r.json())
       .then(setPastSessions)
       .catch(() => {});
   };
 
   const loadSession = async (sessionId) => {
-    const res = await fetch(`http://localhost:3001/messages/${sessionId}`);
+    const res = await fetch(`https://my-ai-agent-g7ho.onrender.com/messages/${sessionId}`);
     const data = await res.json();
     const loaded = data
       .filter(m => m.role !== 'system')
@@ -96,7 +96,7 @@ export default function App() {
     setIsThinking(true);
 
     try {
-      const res = await fetch('http://localhost:3001/chat', {
+      const res = await fetch('https://my-ai-agent-g7ho.onrender.com/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: msg, sessionId: activeSession })
@@ -117,7 +117,7 @@ export default function App() {
     setCurrentPlan(null);
 
     try {
-      const res = await fetch('http://localhost:3001/plan', {
+      const res = await fetch('https://my-ai-agent-g7ho.onrender.com/plan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ goal: planGoal })
