@@ -2,21 +2,19 @@ const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
 
-const CREDENTIALS_PATH = path.join(__dirname, 'credentials.json');
 const TOKEN_PATH = path.join(__dirname, 'drive-token.json');
 
-const credentials = JSON.parse(fs.readFileSync(CREDENTIALS_PATH));
-const { client_id, client_secret, redirect_uris } = credentials.web;
-
 const oauth2Client = new google.auth.OAuth2(
-  client_id,
-  client_secret,
-  'http://localhost:3001/auth/drive/callback'
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.GOOGLE_REDIRECT_URI_DRIVE
 );
 
 if (fs.existsSync(TOKEN_PATH)) {
   const token = JSON.parse(fs.readFileSync(TOKEN_PATH));
   oauth2Client.setCredentials(token);
+} else if (process.env.GOOGLE_DRIVE_TOKEN) {
+  oauth2Client.setCredentials(JSON.parse(process.env.GOOGLE_DRIVE_TOKEN));
 }
 
 function getAuthUrl() {
@@ -31,6 +29,7 @@ async function saveToken(code) {
   oauth2Client.setCredentials(tokens);
   fs.writeFileSync(TOKEN_PATH, JSON.stringify(tokens));
   console.log('✅ Google Drive connected!');
+  console.log('📋 Save this token as GOOGLE_DRIVE_TOKEN env var:', JSON.stringify(tokens));
 }
 
 async function searchFiles(query) {
@@ -45,7 +44,7 @@ async function searchFiles(query) {
 }
 
 function isConnected() {
-  return fs.existsSync(TOKEN_PATH);
+  return fs.existsSync(TOKEN_PATH) || !!process.env.GOOGLE_DRIVE_TOKEN;
 }
 
 module.exports = { getAuthUrl, saveToken, searchFiles, isConnected };
